@@ -1,5 +1,9 @@
 # Change Log
 
+v4.5.0
+
+- Updated the AES Crypt CLI version to the 4.5.0
+
 v4.4.0
 
 - Updated the AES Crypt CLI version to the 4.4.0

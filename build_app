@@ -1,7 +1,7 @@
 #!/bin/bash
 #
 # build_app
-# Copyright (C) 2024, 2025
+# Copyright (C) 2024, 2025, 2026
 # Terrapane Corporation
 #
 # This script will build the AES Crypt application for Mac.
@@ -15,7 +15,7 @@
 #
 
 # Specify which version of AES Crypt to build (git tag)
-AES_CRYPT_VERSION=v4.4.0
+AES_CRYPT_VERSION=v4.5.0
 BUILD_NUMBER=1
 
 # Set the root of the Terrapane source repositories
