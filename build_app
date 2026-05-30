@@ -15,7 +15,7 @@
 #
 
 # Specify which version of AES Crypt to build (git tag)
-AES_CRYPT_VERSION=v4.5.0
+AES_CRYPT_VERSION=v4.6.0
 BUILD_NUMBER=1
 
 # Set the root of the Terrapane source repositories
@@ -73,9 +73,9 @@ git clone --depth=1 --branch=$AES_CRYPT_VERSION --single-branch \
 cd build/aescrypt_cli
 cmake -S . -B build \
     -DCMAKE_BUILD_TYPE:STRING=Release \
-    -DCMAKE_EXE_LINKER_FLAGS="-Wl,-no_warn_duplicate_libraries -Wl,-x -Wl,-dead_strip" \
+    -DCMAKE_EXE_LINKER_FLAGS:STRING="-Wl,-no_warn_duplicate_libraries -Wl,-x -Wl,-dead_strip" \
     -DCMAKE_CXX_FLAGS:STRING="-Wpedantic -Wextra -Werror -Wall -flto" \
-    -DCMAKE_OSX_ARCHITECTURES="x86_64;arm64" \
+    -DCMAKE_OSX_ARCHITECTURES:STRING="x86_64;arm64" \
     ${@+"$@"}
 cmake --build build --parallel
 cd ../..
