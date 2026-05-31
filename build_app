@@ -14,9 +14,12 @@
 # for building.
 #
 
+# Stop on any error
+set -e
+
 # Specify which version of AES Crypt to build (git tag)
 AES_CRYPT_VERSION=v4.6.0
-BUILD_NUMBER=1
+BUILD_NUMBER=0
 
 # Set the root of the Terrapane source repositories
 if [ -z "${TERRAPANE_SOURCE_URI}" ] ; then
@@ -36,7 +39,7 @@ else
 fi
 
 # Switch directories to where this script resides
-cd $( dirname "${BASH_SOURCE[0]}" ) || exit 1
+cd $( dirname "${BASH_SOURCE[0]}" )
 
 # Ensure there isn't already an AES Crypt App file in the parent directory
 if [ -e "$aescrypt_app" ] ; then
@@ -67,7 +70,7 @@ if [ -d build ] ; then
     echo "The ./build directory exists; remove it"
     exit 1
 fi
-mkdir -p build || exit 1
+mkdir -p build
 git clone --depth=1 --branch=$AES_CRYPT_VERSION --single-branch \
           $aescrypt_repo build/aescrypt_cli
 cd build/aescrypt_cli
@@ -78,6 +81,7 @@ cmake -S . -B build \
     -DCMAKE_OSX_ARCHITECTURES:STRING="x86_64;arm64" \
     ${@+"$@"}
 cmake --build build --parallel
+cmake --build build --target test
 cd ../..
 
 # Ensure the AES Crypt executable is in place
@@ -88,7 +92,7 @@ if [ ! -f "$aescrypt_binary" ] ; then
 fi
 
 # Compile the application
-osacompile -o "$aescrypt_app" src/aescrypt-gui.applescript || exit 1
+osacompile -o "$aescrypt_app" src/aescrypt-gui.applescript
 
 # Ensure the AES Crypt App was created
 if [ ! -e "$aescrypt_app" ] ; then
@@ -101,17 +105,17 @@ fi
 echo Updating the application...
 
 # Copy the plist file into place, replacing the version tag
-cat src/Info.plist.template | sed s/AESCRYPT_VERSION_TAG/${AES_CRYPT_RELEASE}/ > "$aescrypt_app"/Contents/Info.plist || exit 1
-plutil -convert binary1 "$aescrypt_app"/Contents/Info.plist || exit 1
+cat src/Info.plist.template | sed s/AESCRYPT_VERSION_TAG/${AES_CRYPT_RELEASE}/ > "$aescrypt_app"/Contents/Info.plist
+plutil -convert binary1 "$aescrypt_app"/Contents/Info.plist
 
 # Put the application icons into place
-iconutil -c icns resources/app_icon.iconset -o "$aescrypt_app"/Contents/Resources/droplet.icns || exit 1
-iconutil -c icns resources/aescrypt_paper.iconset -o "$aescrypt_app"/Contents/Resources/aescrypt_paper.icns || exit 1
-iconutil -c icns resources/aescrypt_lock.iconset -o "$aescrypt_app"/Contents/Resources/aescrypt_lock.icns || exit 1
+iconutil -c icns resources/app_icon.iconset -o "$aescrypt_app"/Contents/Resources/droplet.icns
+iconutil -c icns resources/aescrypt_paper.iconset -o "$aescrypt_app"/Contents/Resources/aescrypt_paper.icns
+iconutil -c icns resources/aescrypt_lock.iconset -o "$aescrypt_app"/Contents/Resources/aescrypt_lock.icns
 
 # Put the AES Crypt binary into place
-cp $aescrypt_binary "$aescrypt_app"/Contents/MacOS/ || exit 1
+cp $aescrypt_binary "$aescrypt_app"/Contents/MacOS/
 rm -fr build
 
 echo The application package has been updated
-
+echo Build Successful
