@@ -560,10 +560,13 @@ on PerformOperations(mode, file_list, password)
 
 			-- Launch AES Crypt as a background task
 			set current_task to do shell script ( ¬
-				"LANG=" & user_locale & " nohup " & aescrypt & ¬
-				" -q -" & mode & " -p " & quoted form of password & space & ¬
-				quoted form of file_path & " >/dev/null 2>" & ¬
-				quoted form of error_file & " & echo $!")
+				"LANG=" & user_locale & " nohup sh -s <<'EOF' >/dev/null 2>" & ¬
+				quoted form of error_file & " &\n" & ¬
+				"PASS=" & quoted form of password & "\n" & ¬
+				"exec " & aescrypt & " -q -" & mode & " -k - " & ¬
+				quoted form of file_path & " <<< \"$PASS\"; unset PASS\n" & ¬
+				"EOF\n" & ¬
+				"echo $!")
 
 			-- Wait for the AES Crypt process to complete
 			repeat
