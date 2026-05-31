@@ -1,5 +1,10 @@
 # Change Log
 
+v.4.6.0
+
+- Updated the AES Crypt CLI version to the 4.6.0
+- Hardened the front-end GUI interface code
+
 v4.5.0
 
 - Updated the AES Crypt CLI version to the 4.5.0
